@@ -1,6 +1,6 @@
 syntax = "proto3";
   
-package service;
+package pb;
 
  
 option go_package = "github.com/franklynobleC/eventstreamTask/service"; 
@@ -23,16 +23,14 @@ message DestroyerRep {
     string id = 1;
     string name = 2 ;
     string infomessage = 3; 
-    Data data = 4 ;  
+    Data data = 4 ; 
 }
-
 message Data{
-   // string id = 1;
-    string name = 2;
+  
     string infomessage = 3;
     string email = 4;
-   
 }
+
 message DestroyerReply{
   repeated DestroyerRep dest = 4;
 } 

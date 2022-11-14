@@ -1,6 +1,6 @@
 syntax = "proto3";
 
- package service;
+ package  pb;
  
   // import "eventstreamTask/service/destroyer.proto";// import "github.com/franklynobleC/eventstreamTask/service/destroyer.proto";
 //  import "google/protobuf/timestamp.proto";

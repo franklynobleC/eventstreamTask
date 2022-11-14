@@ -38,7 +38,7 @@ func NewEventStoreClient(cc grpc.ClientConnInterface) EventStoreClient {
 
 func (c *eventStoreClient) GetEvents(ctx context.Context, in *GetEventsRequest, opts ...grpc.CallOption) (*GetEventResponse, error) {
 	out := new(GetEventResponse)
-	err := c.cc.Invoke(ctx, "/EventStore/GetEvents", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.EventStore/GetEvents", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (c *eventStoreClient) GetEvents(ctx context.Context, in *GetEventsRequest, 
 }
 
 func (c *eventStoreClient) GetEventsStream(ctx context.Context, in *GetEventsRequest, opts ...grpc.CallOption) (EventStore_GetEventsStreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &EventStore_ServiceDesc.Streams[0], "/EventStore/GetEventsStream", opts...)
+	stream, err := c.cc.NewStream(ctx, &EventStore_ServiceDesc.Streams[0], "/pb.EventStore/GetEventsStream", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -121,7 +121,7 @@ func _EventStore_GetEvents_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/EventStore/GetEvents",
+		FullMethod: "/pb.EventStore/GetEvents",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(EventStoreServer).GetEvents(ctx, req.(*GetEventsRequest))
@@ -154,7 +154,7 @@ func (x *eventStoreGetEventsStreamServer) Send(m *Event) error {
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var EventStore_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "EventStore",
+	ServiceName: "pb.EventStore",
 	HandlerType: (*EventStoreServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

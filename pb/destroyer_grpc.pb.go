@@ -36,7 +36,7 @@ func NewDestroyerClient(cc grpc.ClientConnInterface) DestroyerClient {
 
 func (c *destroyerClient) AcquireTargets(ctx context.Context, in *DestroyerGetRequest, opts ...grpc.CallOption) (*DestroyerReply, error) {
 	out := new(DestroyerReply)
-	err := c.cc.Invoke(ctx, "/service.destroyer/acquireTargets", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.destroyer/acquireTargets", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (c *destroyerClient) AcquireTargets(ctx context.Context, in *DestroyerGetRe
 
 func (c *destroyerClient) ListTargethstar(ctx context.Context, in *TargetFilter, opts ...grpc.CallOption) (*DestroyerGetRequest, error) {
 	out := new(DestroyerGetRequest)
-	err := c.cc.Invoke(ctx, "/service.destroyer/listTargethstar", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.destroyer/listTargethstar", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +94,7 @@ func _Destroyer_AcquireTargets_Handler(srv interface{}, ctx context.Context, dec
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/service.destroyer/acquireTargets",
+		FullMethod: "/pb.destroyer/acquireTargets",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DestroyerServer).AcquireTargets(ctx, req.(*DestroyerGetRequest))
@@ -112,7 +112,7 @@ func _Destroyer_ListTargethstar_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/service.destroyer/listTargethstar",
+		FullMethod: "/pb.destroyer/listTargethstar",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DestroyerServer).ListTargethstar(ctx, req.(*TargetFilter))
@@ -124,7 +124,7 @@ func _Destroyer_ListTargethstar_Handler(srv interface{}, ctx context.Context, de
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Destroyer_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "service.destroyer",
+	ServiceName: "pb.destroyer",
 	HandlerType: (*DestroyerServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

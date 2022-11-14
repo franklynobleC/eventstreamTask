@@ -57,7 +57,7 @@ func RegisterDeathstarServer(s grpc.ServiceRegistrar, srv DeathstarServer) {
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Deathstar_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "service.deathstar",
+	ServiceName: "pb.deathstar",
 	HandlerType: (*DeathstarServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams:     []grpc.StreamDesc{},
