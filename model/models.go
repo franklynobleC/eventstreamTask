@@ -7,6 +7,6 @@ type TargetUser struct {
 }
 
 type Data struct {
-	Infomessage string
-	Email       string
+	infomessage string
+	email       string
 }

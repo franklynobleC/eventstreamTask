@@ -23,7 +23,7 @@ type NewEventStore struct {
 func main() {
 
 }
-
+//CODE TO BE REFACTORED, NOT SURE  I KNOW WHAT'S GOING ON
 func (n *NewEventStore) GetEvents(context.Context, *pb.GetEventsRequest) (*pb.GetEventResponse, error) {
 	//TODO: imeplement this to event Store
 
