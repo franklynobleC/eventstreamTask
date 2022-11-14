@@ -22,7 +22,6 @@ message DestroyerGetRequest{
 message DestroyerRep {
     string id = 1;
     string name = 2 ;
-    string infomessage = 3; 
     Data data = 4 ; 
 }
 message Data{
