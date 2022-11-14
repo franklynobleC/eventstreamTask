@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+ package service;
+ 
+  // import "eventstreamTask/service/destroyer.proto";// import "github.com/franklynobleC/eventstreamTask/service/destroyer.proto";
+//  import "google/protobuf/timestamp.proto";
+option go_package = "github.com/franklynobleC/eventstreamTask/service"; 
+ 
+//  import "path/to/other/protos.proto";
+ 
+ service deathstar {
+    //  rpc GetEvents(GetEventsRequest) returns(GetEventResponse){}
+}
+

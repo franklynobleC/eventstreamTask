@@ -1,0 +1,42 @@
+syntax = "proto3";
+  
+package service;
+
+ 
+option go_package = "github.com/franklynobleC/eventstreamTask/service"; 
+  
+
+service destroyer {
+  rpc acquireTargets(DestroyerGetRequest) returns (DestroyerReply){}
+   rpc listTargethstar (TargetFilter) returns (DestroyerGetRequest){}
+   }  
+
+
+message DestroyerGetRequest{
+  string id = 2; 
+  string email = 1;
+  Data data = 3; 
+
+}
+
+message DestroyerRep {
+    string id = 1;
+    string name = 2 ;
+    string infomessage = 3; 
+    Data data = 4 ;  
+}
+
+message Data{
+   // string id = 1;
+    string name = 2;
+    string infomessage = 3;
+    string email = 4;
+   
+}
+message DestroyerReply{
+  repeated DestroyerRep dest = 4;
+} 
+
+message TargetFilter{
+  string keyword = 1;
+}
