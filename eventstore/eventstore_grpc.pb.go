@@ -22,10 +22,9 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type EventStoreClient interface {
+	CreateEvent(ctx context.Context, in *CreateEventRequest, opts ...grpc.CallOption) (*CreateEventResponse, error)
 	// Get all events for the given aggregate and event
 	GetEvents(ctx context.Context, in *GetEventsRequest, opts ...grpc.CallOption) (*GetEventResponse, error)
-	//    Get stream of events for the given event
-	GetEventsStream(ctx context.Context, in *GetEventsRequest, opts ...grpc.CallOption) (EventStore_GetEventsStreamClient, error)
 }
 
 type eventStoreClient struct {
@@ -36,55 +35,31 @@ func NewEventStoreClient(cc grpc.ClientConnInterface) EventStoreClient {
 	return &eventStoreClient{cc}
 }
 
-func (c *eventStoreClient) GetEvents(ctx context.Context, in *GetEventsRequest, opts ...grpc.CallOption) (*GetEventResponse, error) {
-	out := new(GetEventResponse)
-	err := c.cc.Invoke(ctx, "/pb.EventStore/GetEvents", in, out, opts...)
+func (c *eventStoreClient) CreateEvent(ctx context.Context, in *CreateEventRequest, opts ...grpc.CallOption) (*CreateEventResponse, error) {
+	out := new(CreateEventResponse)
+	err := c.cc.Invoke(ctx, "/evenstore.EventStore/CreateEvent", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *eventStoreClient) GetEventsStream(ctx context.Context, in *GetEventsRequest, opts ...grpc.CallOption) (EventStore_GetEventsStreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &EventStore_ServiceDesc.Streams[0], "/pb.EventStore/GetEventsStream", opts...)
+func (c *eventStoreClient) GetEvents(ctx context.Context, in *GetEventsRequest, opts ...grpc.CallOption) (*GetEventResponse, error) {
+	out := new(GetEventResponse)
+	err := c.cc.Invoke(ctx, "/evenstore.EventStore/GetEvents", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &eventStoreGetEventsStreamClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type EventStore_GetEventsStreamClient interface {
-	Recv() (*Event, error)
-	grpc.ClientStream
-}
-
-type eventStoreGetEventsStreamClient struct {
-	grpc.ClientStream
-}
-
-func (x *eventStoreGetEventsStreamClient) Recv() (*Event, error) {
-	m := new(Event)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
+	return out, nil
 }
 
 // EventStoreServer is the server API for EventStore service.
 // All implementations must embed UnimplementedEventStoreServer
 // for forward compatibility
 type EventStoreServer interface {
+	CreateEvent(context.Context, *CreateEventRequest) (*CreateEventResponse, error)
 	// Get all events for the given aggregate and event
 	GetEvents(context.Context, *GetEventsRequest) (*GetEventResponse, error)
-	//    Get stream of events for the given event
-	GetEventsStream(*GetEventsRequest, EventStore_GetEventsStreamServer) error
 	mustEmbedUnimplementedEventStoreServer()
 }
 
@@ -92,11 +67,11 @@ type EventStoreServer interface {
 type UnimplementedEventStoreServer struct {
 }
 
+func (UnimplementedEventStoreServer) CreateEvent(context.Context, *CreateEventRequest) (*CreateEventResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateEvent not implemented")
+}
 func (UnimplementedEventStoreServer) GetEvents(context.Context, *GetEventsRequest) (*GetEventResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetEvents not implemented")
-}
-func (UnimplementedEventStoreServer) GetEventsStream(*GetEventsRequest, EventStore_GetEventsStreamServer) error {
-	return status.Errorf(codes.Unimplemented, "method GetEventsStream not implemented")
 }
 func (UnimplementedEventStoreServer) mustEmbedUnimplementedEventStoreServer() {}
 
@@ -111,6 +86,24 @@ func RegisterEventStoreServer(s grpc.ServiceRegistrar, srv EventStoreServer) {
 	s.RegisterService(&EventStore_ServiceDesc, srv)
 }
 
+func _EventStore_CreateEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateEventRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EventStoreServer).CreateEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/evenstore.EventStore/CreateEvent",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EventStoreServer).CreateEvent(ctx, req.(*CreateEventRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _EventStore_GetEvents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetEventsRequest)
 	if err := dec(in); err != nil {
@@ -121,7 +114,7 @@ func _EventStore_GetEvents_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.EventStore/GetEvents",
+		FullMethod: "/evenstore.EventStore/GetEvents",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(EventStoreServer).GetEvents(ctx, req.(*GetEventsRequest))
@@ -129,45 +122,22 @@ func _EventStore_GetEvents_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _EventStore_GetEventsStream_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(GetEventsRequest)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(EventStoreServer).GetEventsStream(m, &eventStoreGetEventsStreamServer{stream})
-}
-
-type EventStore_GetEventsStreamServer interface {
-	Send(*Event) error
-	grpc.ServerStream
-}
-
-type eventStoreGetEventsStreamServer struct {
-	grpc.ServerStream
-}
-
-func (x *eventStoreGetEventsStreamServer) Send(m *Event) error {
-	return x.ServerStream.SendMsg(m)
-}
-
 // EventStore_ServiceDesc is the grpc.ServiceDesc for EventStore service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var EventStore_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.EventStore",
+	ServiceName: "evenstore.EventStore",
 	HandlerType: (*EventStoreServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateEvent",
+			Handler:    _EventStore_CreateEvent_Handler,
+		},
 		{
 			MethodName: "GetEvents",
 			Handler:    _EventStore_GetEvents_Handler,
 		},
 	},
-	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "GetEventsStream",
-			Handler:       _EventStore_GetEventsStream_Handler,
-			ServerStreams: true,
-		},
-	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "eventstore.proto",
 }

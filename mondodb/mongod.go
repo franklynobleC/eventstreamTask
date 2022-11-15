@@ -2,7 +2,7 @@ package mondodb
 
 import "go.mongodb.org/mongo-driver/mongo"
 
-type MonoStore struct {
+type Mongotore struct {
 	Db *mongo.Client
 	DbName string 
 

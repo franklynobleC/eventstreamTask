@@ -1,29 +1,37 @@
 
 syntax = "proto3";
- package pb;
-
+ 
  option go_package = "github.com/franklynobleC/eventstreamTask/service"; 
+
+package evenstore;
 
 service EventStore {
     
-   
+      rpc CreateEvent(CreateEventRequest) returns (CreateEventResponse){}
     // Get all events for the given aggregate and event
-    rpc GetEvents(GetEventsRequest) returns (GetEventResponse) {}
+     rpc GetEvents(GetEventsRequest) returns (GetEventResponse) {}
   //    Get stream of events for the given event
-    rpc GetEventsStream(GetEventsRequest) returns (stream Event) {}
+  //  rpc GetEventsStream(GetEventsRequest) returns (stream Event) {}
   }
   
   message Event {
     string event_id = 1;
     string event_type = 2;
     string aggregate_type = 4;
-    string stream = 6; 
+    string event_data = 5 ;
   }
  
+    message CreateEventRequest {
+      Event event = 1;
+    }
   
   message GetEventResponse {
-    bool   success = 1;
-    string error = 2;
+    Event event = 1;
+  }
+
+  message CreateEventResponse{
+     bool is_Success = 1; 
+     string error = 2;
   }
   
   message GetEventsRequest {
@@ -31,7 +39,4 @@ service EventStore {
     string aggregate_id = 2;
   }
   
-  // message GetEventsResponse }
-  //   repeated Event events = 1;
-
-  // }
+   

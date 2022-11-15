@@ -14,21 +14,15 @@ service destroyer {
 
 message DestroyerGetRequest{
   string id = 2; 
-  string email = 1;
-  Data data = 3; 
+  string inforMessage = 1;   
 
 }
 
 message DestroyerRep {
     string id = 1;
-    string name = 2 ;
-    Data data = 4 ; 
+    string inforMessage = 2 ;
 }
-message Data{
-  
-    string infomessage = 3;
-    string email = 4;
-}
+
 
 message DestroyerReply{
   repeated DestroyerRep dest = 4;
