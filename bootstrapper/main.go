@@ -36,7 +36,7 @@ func createJestream(streamName string, streamSubject string) error {
 	log.Println(err)
    }
    if stream == nil {
-	log.Printf("Creating stream %q and Subject %q", streaName, streamSubject)
+	log.Printf("Creating stream %q and Subject %q", streamName, streamSubject)
 	_, err = js.AddStream(&nats.StreamConfig{
      Name: streamName,
 	 Subjects: []string{streamSubject},   
