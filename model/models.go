@@ -1,12 +1,8 @@
 package model
 
 type TargetUser struct {
-	Id    string
-	Email string
-	Data  *Data
+	id    string
+	inforMessage string 
+	
 }
 
-type Data struct {
-	infomessage string
-	email       string
-}

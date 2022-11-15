@@ -10,7 +10,7 @@ import (
 
 //use this interface implementation for  the Database interaction
 type DataStore interface {
-	   acquireTargetsFromDb(context.Context, *model.TargetUser)(model.Data, error)
+	   acquireTargetsFromDb(context.Context, *model.TargetUser)(model.TargetUser, error)
        listTargethFromDb(context.Context, model.TargetUser)([] model.TargetUser, error)
     
 	}
